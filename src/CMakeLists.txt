@@ -1,5 +1,10 @@
-set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/fsm.hpp
-                 ${CMAKE_CURRENT_SOURCE_DIR}/fsm.cpp)
+set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/fsm.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/fsm.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/fsm_builder.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/fsm_builder.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/transition.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/transition.cpp)
 
 add_library(lfa_fsm STATIC ${SOURCE_FILES})
 add_library(lfa::fsm ALIAS lfa_fsm)

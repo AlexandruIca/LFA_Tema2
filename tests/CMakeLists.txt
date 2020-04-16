@@ -9,3 +9,4 @@ function(build_test TEST_NAME)
 endfunction()
 
 build_test(fsm_test)
+build_test(fsm_builder_test)
