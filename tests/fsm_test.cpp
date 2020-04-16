@@ -5,5 +5,5 @@
 
 TEST("[FSM] basic")
 {
-    ASSERT(fsm::accepts() == false);
+    ASSERT(fsm::accepts() == true);
 }
