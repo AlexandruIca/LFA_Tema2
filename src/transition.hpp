@@ -6,7 +6,7 @@ namespace fsm::impl {
 
 class transition
 {
-private:
+public:
     int to{ 0 };
     char on{ '\0' };
 
