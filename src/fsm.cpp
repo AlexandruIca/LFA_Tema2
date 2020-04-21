@@ -7,7 +7,7 @@ namespace fsm {
 auto accepts(automaton& autom, std::string const& input) -> bool
 {
     if(input.empty()) {
-        return autom.accepted();
+        return autom.accepts_lambda();
     }
 
     for(char const tok : input) {
