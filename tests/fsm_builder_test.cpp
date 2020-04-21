@@ -38,6 +38,8 @@ TEST("[FSM Builder]")
     builder.add_transition(8, 'y', 6);
     builder.add_transition(8, 'y', 3);
 
+    ASSERT(builder.get_alphabet() == "abcxyz");
+
     auto const& config = builder.get_configuration();
 
     ASSERT(config.at(0).size() == 3);

@@ -21,6 +21,7 @@ public:
     [[nodiscard]] virtual auto aborted() const noexcept -> bool = 0;
     [[nodiscard]] virtual auto accepted() const noexcept -> bool = 0;
     virtual auto reset() -> void = 0;
+    virtual auto print_transitions() -> void = 0;
 };
 
 [[nodiscard]] auto accepts(automaton& autom, std::string const& input) -> bool;

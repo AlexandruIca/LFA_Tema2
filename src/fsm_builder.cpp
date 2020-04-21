@@ -1,4 +1,5 @@
 #include "fsm_builder.hpp"
+#include "lnfa.hpp"
 
 #include <algorithm>
 
@@ -8,6 +9,17 @@ auto builder::add_transition(int const from, char const on, int const to)
     -> void
 {
     m_automaton[from].emplace_back(on, to);
+
+    if(on == fsm::lambda) {
+        return;
+    }
+    if(m_alphabet.find(on) != std::string::npos) {
+        return;
+    }
+
+    // new character to put in alphabet
+    m_alphabet.push_back(on);
+    std::sort(m_alphabet.begin(), m_alphabet.end());
 }
 
 auto builder::set_starting_state(int const state) -> void
@@ -33,6 +45,11 @@ auto builder::get_accepting_states() const noexcept -> std::vector<int> const&
 auto builder::get_starting_state() const noexcept -> int
 {
     return m_starting_state;
+}
+
+auto builder::get_alphabet() const noexcept -> std::string
+{
+    return m_alphabet;
 }
 
 } // namespace fsm

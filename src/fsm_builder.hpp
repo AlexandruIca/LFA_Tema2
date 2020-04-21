@@ -3,6 +3,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <vector>
 
 #include "transition.hpp"
@@ -17,6 +18,7 @@ private:
 
     automaton_t m_automaton{};
     std::vector<int> m_accepting_states{};
+    std::string m_alphabet{};
     int m_starting_state{ 0 };
 
 public:
@@ -36,6 +38,7 @@ public:
     [[nodiscard]] auto get_accepting_states() const noexcept
         -> std::vector<int> const&;
     [[nodiscard]] auto get_starting_state() const noexcept -> int;
+    [[nodiscard]] auto get_alphabet() const noexcept -> std::string;
 };
 
 } // namespace fsm
