@@ -3,6 +3,8 @@
 #include "lnfa.hpp"
 #include "test.hpp"
 
+#include <string>
+
 using vec = std::vector<int>;
 
 template<typename T, typename U>
@@ -38,13 +40,17 @@ TEST("[LNFA]")
 
     fsm::lnfa lnfa{ builder };
 
-    ASSERT(fsm::accepts(lnfa, "abxyyyxyby"));
-    lnfa.reset();
-    ASSERT(fsm::accepts(lnfa, "bcax"));
-    lnfa.reset();
-    ASSERT(!fsm::accepts(lnfa, "bcbxxy"));
-    lnfa.reset();
-    ASSERT(!fsm::accepts(lnfa, "abyyxz"));
-    lnfa.reset();
-    ASSERT(fsm::accepts(lnfa, "abyyxyx"));
+    lnfa.print_transitions();
+
+    std::vector<std::string> inputs{
+        { "abxyyyxyby", "bcax", "bcbxxy", "abyyxz", "abyyxyx" }
+    };
+    std::vector<int> values{ { 1, 1, 0, 0, 1 } };
+
+    auto index = 0U;
+    for(auto const& input : inputs) {
+        auto const expected = static_cast<bool>(values[index++]);
+        ASSERT(fsm::accepts(lnfa, input) == expected);
+        lnfa.reset();
+    }
 }
