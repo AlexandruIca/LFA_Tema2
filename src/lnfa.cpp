@@ -1,18 +1,23 @@
 #include "lnfa.hpp"
+#include "printer.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include <utility>
+#include <vector>
 
 namespace fsm {
 
 lnfa::lnfa(builder const& build)
     : m_builder{ build }
 {
+    m_current_states.push_back(m_builder.get_starting_state());
 }
 
 lnfa::lnfa(builder&& build) noexcept
     : m_builder{ std::move(build) }
 {
+    m_current_states.push_back(m_builder.get_starting_state());
 }
 
 auto lnfa::check_lambda(std::set<int>& to_check, int const state) -> void
@@ -98,6 +103,17 @@ auto lnfa::reset() -> void
     m_current_states.clear();
     m_current_states.push_back(m_builder.get_starting_state());
     m_aborted = false;
+}
+
+auto lnfa::print_transitions() -> void
+{
+    auto const& autom = m_builder.get_configuration();
+
+    for(auto const& [state, transitions] : autom) {
+        std::cout << state << ':' << '\t';
+        print(transitions);
+        std::cout << std::endl;
+    }
 }
 
 } // namespace fsm

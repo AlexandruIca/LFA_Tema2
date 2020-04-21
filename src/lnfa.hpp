@@ -36,6 +36,8 @@ public:
     [[nodiscard]] auto aborted() const noexcept -> bool override;
     [[nodiscard]] auto accepted() const noexcept -> bool override;
     auto reset() -> void override;
+
+    auto print_transitions() -> void;
 };
 
 } // namespace fsm
