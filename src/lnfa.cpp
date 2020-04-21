@@ -146,7 +146,7 @@ auto lnfa::to_nfa() -> builder
 {
     auto print_set = [](std::set<int> const& s) -> void {
         std::cout << '{';
-        if(s.size() >= 1U) {
+        if(!s.empty()) {
             std::cout << (*s.begin());
         }
         if(s.size() > 1U) {
