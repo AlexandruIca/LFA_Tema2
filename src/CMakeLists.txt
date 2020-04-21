@@ -6,7 +6,9 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/lnfa.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/lnfa.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/transition.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/transition.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/transition.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/printer.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/printer.cpp)
 
 add_library(lfa_fsm STATIC ${SOURCE_FILES})
 add_library(lfa::fsm ALIAS lfa_fsm)
