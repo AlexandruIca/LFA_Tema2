@@ -19,6 +19,7 @@ private:
     bool m_aborted{ false };
 
     auto check_lambda(std::set<int>& to_check, int const state) -> void;
+    [[nodiscard]] auto lambda_suffix(int const from) -> std::set<int>;
 
 public:
     lnfa() = default;
@@ -35,8 +36,11 @@ public:
     auto next(char const input) -> void override;
     [[nodiscard]] auto aborted() const noexcept -> bool override;
     [[nodiscard]] auto accepted() const noexcept -> bool override;
+    [[nodiscard]] auto accepts_lambda() noexcept -> bool override;
     auto reset() -> void override;
     auto print_transitions() -> void override;
+
+    [[nodiscard]] auto to_nfa() -> builder;
 };
 
 } // namespace fsm

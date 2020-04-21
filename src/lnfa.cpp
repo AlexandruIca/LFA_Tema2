@@ -40,6 +40,15 @@ auto lnfa::check_lambda(std::set<int>& to_check, int const state) -> void
     }
 }
 
+auto lnfa::lambda_suffix(int const from) -> std::set<int>
+{
+    std::set<int> result{};
+
+    this->check_lambda(result, from);
+
+    return result;
+}
+
 auto lnfa::next(char const input) -> void
 {
     std::set<int> to_check{};
@@ -98,6 +107,23 @@ auto lnfa::accepted() const noexcept -> bool
     return false;
 }
 
+auto lnfa::accepts_lambda() noexcept -> bool
+{
+    auto const& states = this->lambda_suffix(m_builder.get_starting_state());
+    auto const& final_states = m_builder.get_accepting_states();
+
+    for(int const state : states) {
+        auto const it =
+            std::find(final_states.begin(), final_states.end(), state);
+
+        if(it != final_states.end()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 auto lnfa::reset() -> void
 {
     m_current_states.clear();
@@ -114,6 +140,40 @@ auto lnfa::print_transitions() -> void
         print(transitions);
         std::cout << std::endl;
     }
+}
+
+auto lnfa::to_nfa() -> builder
+{
+    auto print_set = [](std::set<int> const& s) -> void {
+        std::cout << '{';
+        if(s.size() >= 1U) {
+            std::cout << (*s.begin());
+        }
+        if(s.size() > 1U) {
+            auto it = s.begin();
+            std::advance(it, 1);
+
+            for(; it != s.end(); ++it) {
+                std::cout << ", " << *it;
+            }
+        }
+        std::cout << '}';
+    };
+
+    builder result{};
+    std::vector<std::set<int>> path{};
+    auto const& autom = m_builder.get_configuration();
+
+    path.resize(autom.size());
+
+    for(auto i = 0U; i < autom.size(); ++i) {
+        path[i] = this->lambda_suffix(static_cast<int>(i));
+        std::cout << i << ": ";
+        print_set(path[i]);
+        std::cout << std::endl;
+    }
+
+    return result;
 }
 
 } // namespace fsm
