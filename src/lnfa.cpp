@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -165,23 +166,16 @@ auto lnfa::to_nfa() -> builder
 {
     builder result{};
     std::vector<std::set<int>> path{};
+    std::map<char, std::vector<std::set<int>>> enclosing{};
     auto const& autom = m_builder.get_configuration();
 
     path.resize(autom.size());
 
     for(auto i = 0U; i < autom.size(); ++i) {
         path[i] = this->lambda_suffix(static_cast<int>(i));
-        std::cout << i << ": ";
-        print(path[i]);
-        std::cout << std::endl << std::endl;
 
         for(char const ch : m_builder.get_alphabet()) {
             auto const& states = this->can_go_to(path[i], ch);
-
-            std::cout << ch << ": ";
-            print(states);
-            std::cout << std::endl;
-
             std::set<int> final_path{};
 
             for(int const state : states) {
@@ -189,15 +183,20 @@ auto lnfa::to_nfa() -> builder
                 final_path.insert(tmp.begin(), tmp.end());
             }
 
-            std::cout << "Final for " << ch << ": ";
-            print(final_path);
-            std::cout << std::endl;
+            enclosing[ch].push_back(std::move(final_path));
         }
-
-        std::cout << std::endl;
     }
 
-    std::cout << std::endl;
+    std::cout << "Testing enclosing: " << std::endl;
+
+    for(char const ch : m_builder.get_alphabet()) {
+        std::cout << ch << ":\n";
+
+        for(auto i = 0U; i < autom.size(); ++i) {
+            print(enclosing[ch][i]);
+            std::cout << std::endl;
+        }
+    }
 
     return result;
 }
