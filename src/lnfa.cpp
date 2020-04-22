@@ -49,6 +49,25 @@ auto lnfa::lambda_suffix(int const from) -> std::set<int>
     return result;
 }
 
+auto lnfa::can_go_to(std::set<int> const& input, char const on) const
+    -> std::set<int>
+{
+    std::set<int> result{};
+    auto const& autom = m_builder.get_configuration();
+
+    for(int const state : input) {
+        auto const& transitions = autom.at(state);
+
+        for(auto const& transition : transitions) {
+            if(transition.on == on) {
+                result.insert(transition.to);
+            }
+        }
+    }
+
+    return result;
+}
+
 auto lnfa::next(char const input) -> void
 {
     std::set<int> to_check{};
@@ -144,22 +163,6 @@ auto lnfa::print_transitions() -> void
 
 auto lnfa::to_nfa() -> builder
 {
-    auto print_set = [](std::set<int> const& s) -> void {
-        std::cout << '{';
-        if(!s.empty()) {
-            std::cout << (*s.begin());
-        }
-        if(s.size() > 1U) {
-            auto it = s.begin();
-            std::advance(it, 1);
-
-            for(; it != s.end(); ++it) {
-                std::cout << ", " << *it;
-            }
-        }
-        std::cout << '}';
-    };
-
     builder result{};
     std::vector<std::set<int>> path{};
     auto const& autom = m_builder.get_configuration();
@@ -169,9 +172,32 @@ auto lnfa::to_nfa() -> builder
     for(auto i = 0U; i < autom.size(); ++i) {
         path[i] = this->lambda_suffix(static_cast<int>(i));
         std::cout << i << ": ";
-        print_set(path[i]);
+        print(path[i]);
+        std::cout << std::endl << std::endl;
+
+        for(char const ch : m_builder.get_alphabet()) {
+            auto const& states = this->can_go_to(path[i], ch);
+
+            std::cout << ch << ": ";
+            print(states);
+            std::cout << std::endl;
+
+            std::set<int> final_path{};
+
+            for(int const state : states) {
+                auto const& tmp = this->lambda_suffix(state);
+                final_path.insert(tmp.begin(), tmp.end());
+            }
+
+            std::cout << "Final for " << ch << ": ";
+            print(final_path);
+            std::cout << std::endl;
+        }
+
         std::cout << std::endl;
     }
+
+    std::cout << std::endl;
 
     return result;
 }

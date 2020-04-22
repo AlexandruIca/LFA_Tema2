@@ -20,6 +20,8 @@ private:
 
     auto check_lambda(std::set<int>& to_check, int const state) -> void;
     [[nodiscard]] auto lambda_suffix(int const from) -> std::set<int>;
+    [[nodiscard]] auto can_go_to(std::set<int> const& input,
+                                 char const on) const -> std::set<int>;
 
 public:
     lnfa() = default;
