@@ -162,6 +162,22 @@ auto lnfa::print_transitions() -> void
     }
 }
 
+auto lnfa::print_enclosing(
+    std::map<char, std::vector<std::set<int>>> const& enclosing) -> void
+{
+    auto const& autom = m_builder.get_configuration();
+
+    for(char const ch : m_builder.get_alphabet()) {
+        std::cout << ch << ":\n";
+
+        for(auto i = 0U; i < autom.size(); ++i) {
+            std::cout << i << ": ";
+            print(enclosing.at(ch)[i]);
+            std::cout << std::endl;
+        }
+    }
+}
+
 auto lnfa::to_nfa() -> builder
 {
     builder result{};
@@ -188,15 +204,9 @@ auto lnfa::to_nfa() -> builder
     }
 
     std::cout << "Testing enclosing: " << std::endl;
+    this->print_enclosing(enclosing);
 
-    for(char const ch : m_builder.get_alphabet()) {
-        std::cout << ch << ":\n";
-
-        for(auto i = 0U; i < autom.size(); ++i) {
-            print(enclosing[ch][i]);
-            std::cout << std::endl;
-        }
-    }
+    result.set_starting_state(m_builder.get_starting_state());
 
     return result;
 }

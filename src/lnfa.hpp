@@ -22,6 +22,9 @@ private:
     [[nodiscard]] auto lambda_suffix(int const from) -> std::set<int>;
     [[nodiscard]] auto can_go_to(std::set<int> const& input,
                                  char const on) const -> std::set<int>;
+    auto
+    print_enclosing(std::map<char, std::vector<std::set<int>>> const& enclosing)
+        -> void;
 
 public:
     lnfa() = default;
