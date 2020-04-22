@@ -39,4 +39,23 @@ auto print(std::vector<fsm::impl::transition> const& vec, std::ostream& os)
     os << ']';
 }
 
+auto print(std::set<int> const& set, std::ostream& os) -> void
+{
+    os << '{';
+
+    if(!set.empty()) {
+        os << (*set.begin());
+
+        auto it = set.begin();
+        ++it;
+
+        for(; it != set.end(); ++it) {
+            os << ", ";
+            os << (*it);
+        }
+    }
+
+    os << '}';
+}
+
 } // namespace fsm
