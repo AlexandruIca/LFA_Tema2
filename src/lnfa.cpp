@@ -165,12 +165,13 @@ auto lnfa::print_transitions() -> void
 auto lnfa::print_enclosing(
     std::map<char, std::vector<std::set<int>>> const& enclosing) -> void
 {
-    auto const& autom = m_builder.get_configuration();
+    // auto const& autom = m_builder.get_configuration();
 
     for(char const ch : m_builder.get_alphabet()) {
         std::cout << ch << ":\n";
+        auto size = enclosing.at(ch).size();
 
-        for(auto i = 0U; i < autom.size(); ++i) {
+        for(auto i = 0U; i < size; ++i) {
             std::cout << i << ": ";
             print(enclosing.at(ch)[i]);
             std::cout << std::endl;
@@ -208,7 +209,7 @@ auto lnfa::get_identical_states(
 
     for(auto i = 0U; i < autom.size() - 1; ++i) {
         for(auto j = i + 1; j < autom.size(); ++j) {
-            if(path[i] == path[j] && is_final(i) == is_final(j)) {
+            if(is_final(i) == is_final(j) && path[i] == path[j]) {
                 result.insert(static_cast<int>(i));
                 result.insert(static_cast<int>(j));
             }
@@ -265,13 +266,32 @@ auto lnfa::to_nfa() -> builder
 
     std::cout << "Testing enclosing: " << std::endl;
     this->print_enclosing(enclosing);
+
+    auto const& identical_states = this->get_identical_states(enclosing);
     std::cout << "Identical states: " << std::endl;
-    print(this->get_identical_states(enclosing));
+    print(identical_states);
     std::cout << std::endl << std::endl;
 
+    std::cout << "Final states: \n";
     for(auto const s : m_all_final_states) {
         std::cout << s << ' ';
     }
+    std::cout << std::endl;
+
+    for(auto i = identical_states.size() - 1; i > 0U; --i) {
+        auto it = identical_states.begin();
+        std::advance(it, i);
+        int const state = *it;
+
+        for(char const ch : m_builder.get_alphabet()) {
+            auto iter = enclosing.at(ch).begin();
+            std::advance(iter, state);
+            enclosing.at(ch).erase(iter);
+        }
+    }
+
+    std::cout << "After removal: \n";
+    this->print_enclosing(enclosing);
     std::cout << std::endl;
 
     result.set_starting_state(m_builder.get_starting_state());
