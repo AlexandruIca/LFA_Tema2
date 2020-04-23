@@ -16,6 +16,8 @@ class lnfa final : public automaton
 private:
     builder m_builder{};
     std::vector<int> m_current_states{};
+    // Final states after lambda enclosing
+    std::set<int> m_all_final_states{};
     bool m_aborted{ false };
 
     auto check_lambda(std::set<int>& to_check, int const state) -> void;
@@ -25,6 +27,9 @@ private:
     auto
     print_enclosing(std::map<char, std::vector<std::set<int>>> const& enclosing)
         -> void;
+    [[nodiscard]] auto get_identical_states(
+        std::map<char, std::vector<std::set<int>>> const& enclosing) const
+        -> std::set<int>;
 
 public:
     lnfa() = default;

@@ -178,17 +178,77 @@ auto lnfa::print_enclosing(
     }
 }
 
+auto lnfa::get_identical_states(
+    std::map<char, std::vector<std::set<int>>> const& enclosing) const
+    -> std::set<int>
+{
+    auto is_final = [this](unsigned const state) -> bool {
+        auto const it = std::find(m_all_final_states.begin(),
+                                  m_all_final_states.end(),
+                                  static_cast<int>(state));
+        return it != m_all_final_states.end();
+    };
+
+    std::set<int> result{};
+    // path[i] will be where does state i point to on each char of the alphabet
+    // so path[i][j] is where does state i point to on character j
+    // two paths are identical if path[i] == path[j]
+    //  and
+    // is_final(i) == is_final(j)
+    std::vector<std::vector<std::set<int>>> path{};
+    auto const& autom = m_builder.get_configuration();
+
+    for(auto i = 0U; i < autom.size(); ++i) {
+        path.emplace_back();
+
+        for(char const ch : m_builder.get_alphabet()) {
+            path.back().emplace_back(enclosing.at(ch)[i]);
+        }
+    }
+
+    for(auto i = 0U; i < autom.size() - 1; ++i) {
+        for(auto j = i + 1; j < autom.size(); ++j) {
+            if(path[i] == path[j] && is_final(i) == is_final(j)) {
+                result.insert(static_cast<int>(i));
+                result.insert(static_cast<int>(j));
+            }
+        }
+    }
+
+    return result;
+}
+
 auto lnfa::to_nfa() -> builder
 {
     builder result{};
     std::vector<std::set<int>> path{};
     std::map<char, std::vector<std::set<int>>> enclosing{};
     auto const& autom = m_builder.get_configuration();
+    auto const& final_states = m_builder.get_accepting_states();
 
     path.resize(autom.size());
+    m_all_final_states.insert(final_states.begin(), final_states.end());
+
+    auto is_final = [this](std::set<int> const& set) -> bool {
+        auto const& finals = m_builder.get_accepting_states();
+
+        for(int const state : set) {
+            auto const it = std::find(finals.begin(), finals.end(), state);
+
+            if(it != finals.end()) {
+                return true;
+            }
+        }
+
+        return false;
+    };
 
     for(auto i = 0U; i < autom.size(); ++i) {
         path[i] = this->lambda_suffix(static_cast<int>(i));
+
+        if(is_final(path[i])) {
+            m_all_final_states.insert(static_cast<int>(i));
+        }
 
         for(char const ch : m_builder.get_alphabet()) {
             auto const& states = this->can_go_to(path[i], ch);
@@ -205,6 +265,14 @@ auto lnfa::to_nfa() -> builder
 
     std::cout << "Testing enclosing: " << std::endl;
     this->print_enclosing(enclosing);
+    std::cout << "Identical states: " << std::endl;
+    print(this->get_identical_states(enclosing));
+    std::cout << std::endl << std::endl;
+
+    for(auto const s : m_all_final_states) {
+        std::cout << s << ' ';
+    }
+    std::cout << std::endl;
 
     result.set_starting_state(m_builder.get_starting_state());
 
