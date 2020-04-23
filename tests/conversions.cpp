@@ -51,6 +51,8 @@ TEST("[LNFA -> NFA]")
     ASSERT(fsm::accepts(lnfa, "b"));
     ASSERT(fsm::accepts(lnfa, "ab"));
     ASSERT(fsm::accepts(lnfa, "bbbb"));
+    ASSERT(!fsm::accepts(lnfa, "c"));
+    ASSERT(!fsm::accepts(lnfa, "aabbbbcbaab"));
 
     static_cast<void>(lnfa.to_nfa());
 }
