@@ -15,6 +15,8 @@ template<typename T, typename U>
 
 TEST("[LNFA]")
 {
+    using fsm::lambda;
+
     fsm::builder builder{};
 
     builder.set_starting_state(0);
@@ -24,13 +26,13 @@ TEST("[LNFA]")
     builder.add_transition(0, 'a', 1);
     builder.add_transition(0, 'a', 2);
     builder.add_transition(0, 'b', 2);
-    builder.add_transition(1, fsm::lambda, 3);
+    builder.add_transition(1, lambda, 3);
     builder.add_transition(2, 'c', 4);
     builder.add_transition(3, 'b', 5);
-    builder.add_transition(3, fsm::lambda, 4);
+    builder.add_transition(3, lambda, 4);
     builder.add_transition(4, 'a', 5);
     builder.add_transition(4, 'b', 6);
-    builder.add_transition(5, fsm::lambda, 7);
+    builder.add_transition(5, lambda, 7);
     builder.add_transition(6, 'x', 7);
     builder.add_transition(7, 'y', 7);
     builder.add_transition(7, 'x', 8);

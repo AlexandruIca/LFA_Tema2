@@ -15,6 +15,7 @@ template<typename T, typename U>
 
 TEST("[LNFA -> NFA]")
 {
+    using fsm::lambda;
     fsm::builder builder{};
 
     builder.set_starting_state(0);
@@ -24,21 +25,21 @@ TEST("[LNFA -> NFA]")
     builder.add_transition(0, 'a', 0);
     builder.add_transition(0, 'a', 1);
     builder.add_transition(0, 'b', 2);
-    builder.add_transition(0, fsm::lambda, 2);
-    builder.add_transition(0, fsm::lambda, 3);
-    builder.add_transition(1, fsm::lambda, 2);
+    builder.add_transition(0, lambda, 2);
+    builder.add_transition(0, lambda, 3);
+    builder.add_transition(1, lambda, 2);
     builder.add_transition(2, 'a', 3);
-    builder.add_transition(2, fsm::lambda, 4);
+    builder.add_transition(2, lambda, 4);
     builder.add_transition(3, 'b', 3);
-    builder.add_transition(3, fsm::lambda, 5);
+    builder.add_transition(3, lambda, 5);
     builder.add_transition(3, 'a', 6);
     builder.add_transition(3, 'b', 6);
     builder.add_transition(4, 'b', 5);
     builder.add_transition(4, 'a', 6);
-    builder.add_transition(4, fsm::lambda, 6);
-    builder.add_transition(5, fsm::lambda, 2);
+    builder.add_transition(4, lambda, 6);
+    builder.add_transition(5, lambda, 2);
     builder.add_transition(5, 'b', 2);
-    builder.add_transition(5, fsm::lambda, 6);
+    builder.add_transition(5, lambda, 6);
     builder.add_transition(5, 'a', 6);
     builder.add_transition(6, 'b', 6);
 
