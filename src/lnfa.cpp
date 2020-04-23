@@ -219,6 +219,27 @@ auto lnfa::get_identical_states(
     return result;
 }
 
+auto lnfa::rename_redundant_states(std::set<int>& input,
+                                   std::set<int> const& redundant) const -> void
+{
+    if(redundant.empty()) {
+        return;
+    }
+
+    std::set<int> new_set{};
+
+    for(auto it = input.begin(); it != input.end(); ++it) {
+        if(redundant.count(*it) > 0U) {
+            new_set.insert(*redundant.begin());
+        }
+        else {
+            new_set.insert(*it);
+        }
+    }
+
+    input = new_set;
+}
+
 auto lnfa::to_nfa() -> builder
 {
     builder result{};
@@ -287,6 +308,12 @@ auto lnfa::to_nfa() -> builder
             auto iter = enclosing.at(ch).begin();
             std::advance(iter, state);
             enclosing.at(ch).erase(iter);
+        }
+    }
+
+    for(char const ch : m_builder.get_alphabet()) {
+        for(auto& set : enclosing.at(ch)) {
+            this->rename_redundant_states(set, identical_states);
         }
     }
 

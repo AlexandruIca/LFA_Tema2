@@ -30,6 +30,8 @@ private:
     [[nodiscard]] auto get_identical_states(
         std::map<char, std::vector<std::set<int>>> const& enclosing) const
         -> std::set<int>;
+    auto rename_redundant_states(std::set<int>& input,
+                                 std::set<int> const& redundant) const -> void;
 
 public:
     lnfa() = default;
