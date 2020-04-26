@@ -1,9 +1,18 @@
 #define MAIN_EXECUTABLE
 #include "fsm_builder.hpp"
 #include "lnfa.hpp"
+#include "nfa.hpp"
 #include "test.hpp"
 
 #include <string>
+
+#define ASSERT_ACCEPT(autom, input)                                            \
+    ASSERT(fsm::accepts(autom, input));                                        \
+    (autom).reset()
+
+#define ASSERT_NOT_ACCEPT(autom, input)                                        \
+    ASSERT(!fsm::accepts(autom, input));                                       \
+    (autom).reset()
 
 using vec = std::vector<int>;
 
@@ -47,13 +56,21 @@ TEST("[LNFA -> NFA]")
 
     fsm::lnfa lnfa{ builder };
 
-    ASSERT(fsm::accepts(lnfa, ""));
-    ASSERT(fsm::accepts(lnfa, "a"));
-    ASSERT(fsm::accepts(lnfa, "b"));
-    ASSERT(fsm::accepts(lnfa, "ab"));
-    ASSERT(fsm::accepts(lnfa, "bbbb"));
-    ASSERT(!fsm::accepts(lnfa, "c"));
-    ASSERT(!fsm::accepts(lnfa, "aabbbbcbaab"));
+    ASSERT_ACCEPT(lnfa, "");
+    ASSERT_ACCEPT(lnfa, "a");
+    ASSERT_ACCEPT(lnfa, "b");
+    ASSERT_ACCEPT(lnfa, "ab");
+    ASSERT_ACCEPT(lnfa, "bbbb");
+    ASSERT_NOT_ACCEPT(lnfa, "c");
+    ASSERT_NOT_ACCEPT(lnfa, "aabbbbcbaab");
 
-    static_cast<void>(lnfa.to_nfa());
+    fsm::nfa nfa{ lnfa.to_nfa() };
+
+    ASSERT_ACCEPT(nfa, "");
+    ASSERT_ACCEPT(nfa, "a");
+    ASSERT_ACCEPT(nfa, "b");
+    ASSERT_ACCEPT(nfa, "ab");
+    ASSERT_ACCEPT(nfa, "bbbb");
+    ASSERT_NOT_ACCEPT(nfa, "c");
+    ASSERT_NOT_ACCEPT(nfa, "aabbbbcbaab");
 }
