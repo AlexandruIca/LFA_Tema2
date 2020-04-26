@@ -208,11 +208,18 @@ auto lnfa::get_identical_states(
     }
 
     for(auto i = 0U; i < autom.size() - 1; ++i) {
+        bool found{ false };
+
         for(auto j = i + 1; j < autom.size(); ++j) {
             if(is_final(i) == is_final(j) && path[i] == path[j]) {
                 result.insert(static_cast<int>(i));
                 result.insert(static_cast<int>(j));
+                found = true;
             }
+        }
+
+        if(found) {
+            return result;
         }
     }
 
@@ -238,6 +245,66 @@ auto lnfa::rename_redundant_states(std::set<int>& input,
     }
 
     input = new_set;
+}
+
+[[nodiscard]] static auto get_new_index(int const state,
+                                        std::set<int> const& redundant) -> int
+{
+    if(redundant.empty()) {
+        return state;
+    }
+
+    int index{ 0 };
+    auto it = redundant.begin();
+    ++it;
+
+    for(; it != redundant.end(); ++it) {
+        if(*it == state) {
+            return *redundant.begin();
+        }
+        if(*it < state) {
+            ++index;
+        }
+    }
+
+    return state - index;
+}
+
+auto lnfa::build_nfa(
+    fsm::builder& build,
+    std::map<char, std::vector<std::set<int>>> const& enclosing,
+    std::set<int> const& redundant) -> void
+{
+    auto new_idx = [&redundant](int const state) -> int {
+        return get_new_index(state, redundant);
+    };
+
+    build.set_starting_state(new_idx(m_builder.get_starting_state()));
+
+    std::set<int> unique_final_states{};
+    for(int const state : m_all_final_states) {
+        unique_final_states.insert(new_idx(state));
+    }
+    for(int const state : unique_final_states) {
+        build.set_accepting_state(state);
+    }
+
+    for(auto const& [ch, states] : enclosing) {
+        for(auto i = 0U; i < states.size(); ++i) {
+            for(int const state : states[i]) {
+                build.add_transition(static_cast<int>(i), ch, new_idx(state));
+            }
+        }
+    }
+
+    auto const& autom = build.get_configuration();
+
+    std::cout << "NFA:\n";
+    for(auto const& [state, transitions] : autom) {
+        std::cout << state << ": ";
+        print(transitions);
+        std::cout << std::endl;
+    }
 }
 
 auto lnfa::to_nfa() -> builder
@@ -289,6 +356,7 @@ auto lnfa::to_nfa() -> builder
     this->print_enclosing(enclosing);
 
     auto const& identical_states = this->get_identical_states(enclosing);
+
     std::cout << "Identical states: " << std::endl;
     print(identical_states);
     std::cout << std::endl << std::endl;
@@ -321,7 +389,7 @@ auto lnfa::to_nfa() -> builder
     this->print_enclosing(enclosing);
     std::cout << std::endl;
 
-    result.set_starting_state(m_builder.get_starting_state());
+    this->build_nfa(result, enclosing, identical_states);
 
     return result;
 }
