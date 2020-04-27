@@ -1,4 +1,5 @@
 #define MAIN_EXECUTABLE
+#include "dfa.hpp"
 #include "fsm_builder.hpp"
 #include "lnfa.hpp"
 #include "nfa.hpp"
@@ -74,7 +75,19 @@ TEST("[LNFA -> NFA -> DFA]")
     ASSERT_NOT_ACCEPT(nfa, "c");
     ASSERT_NOT_ACCEPT(nfa, "aabbbbcbaab");
 
+    std::cout << "\nNFA:\n";
     nfa.print_transitions();
 
-    static_cast<void>(nfa.to_dfa());
+    fsm::dfa dfa{ nfa.to_dfa() };
+
+    ASSERT_ACCEPT(dfa, "");
+    ASSERT_ACCEPT(dfa, "a");
+    ASSERT_ACCEPT(dfa, "b");
+    ASSERT_ACCEPT(dfa, "ab");
+    ASSERT_ACCEPT(dfa, "bbbb");
+    ASSERT_NOT_ACCEPT(dfa, "c");
+    ASSERT_NOT_ACCEPT(dfa, "aabbbbcbaab");
+
+    std::cout << "\nDFA:\n";
+    dfa.print_transitions();
 }

@@ -7,6 +7,8 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/lnfa.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/nfa.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/nfa.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dfa.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/dfa.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/transition.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/transition.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/printer.hpp
