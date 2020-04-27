@@ -32,8 +32,8 @@ private:
     [[nodiscard]] auto get_identical_states(
         std::map<char, std::vector<std::set<int>>> const& enclosing) const
         -> std::set<int>;
-    auto rename_redundant_states(std::set<int>& input,
-                                 std::set<int> const& redundant) const -> void;
+    static auto rename_redundant_states(std::set<int>& input,
+                                        std::set<int> const& redundant) -> void;
     auto build_nfa(builder& build,
                    std::map<char, std::vector<std::set<int>>> const& enclosing,
                    std::set<int> const& redundant) -> void;
