@@ -73,4 +73,8 @@ TEST("[LNFA -> NFA]")
     ASSERT_ACCEPT(nfa, "bbbb");
     ASSERT_NOT_ACCEPT(nfa, "c");
     ASSERT_NOT_ACCEPT(nfa, "aabbbbcbaab");
+
+    nfa.print_transitions();
+
+    static_cast<void>(nfa.to_dfa());
 }
