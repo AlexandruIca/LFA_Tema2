@@ -295,7 +295,7 @@ auto main(int, char*[]) noexcept -> int
     auto currentDir = fs::path{ "." };
     fs::directory_iterator dirIter{};
 
-    println("Report:");
+    println("\nReport:");
     for(fs::directory_iterator file{ currentDir }; file != dirIter; ++file) {
         if(startsWith(file->path().string(), "./test_")) {
             std::ifstream f{ file->path().string() };

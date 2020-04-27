@@ -65,6 +65,9 @@ TEST("[LNFA -> NFA -> DFA -> Min-DFA]")
     ASSERT_NOT_ACCEPT(lnfa, "c");
     ASSERT_NOT_ACCEPT(lnfa, "aabbbbcbaab");
 
+    std::cout << "LNFA:\n";
+    lnfa.print_transitions();
+
     fsm::nfa nfa{ lnfa.to_nfa() };
 
     ASSERT_ACCEPT(nfa, "");

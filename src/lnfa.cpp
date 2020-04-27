@@ -155,8 +155,14 @@ auto lnfa::print_transitions() -> void
 {
     auto const& autom = m_builder.get_configuration();
 
+    std::cout << "Final states: [ ";
+    for(int const final_state : m_builder.get_accepting_states()) {
+        std::cout << final_state << ' ';
+    }
+    std::cout << "]\n";
+
     for(auto const& [state, transitions] : autom) {
-        std::cout << state << ':' << '\t';
+        std::cout << state << ": ";
         print(transitions);
         std::cout << std::endl;
     }
@@ -343,11 +349,14 @@ auto lnfa::to_nfa() -> builder
         }
     }
 
+    /*
     std::cout << "Testing enclosing: " << std::endl;
     this->print_enclosing(enclosing);
+    */
 
     auto const& identical_states = this->get_identical_states(enclosing);
 
+    /*
     std::cout << "Identical states: " << std::endl;
     print(identical_states);
     std::cout << std::endl << std::endl;
@@ -357,6 +366,7 @@ auto lnfa::to_nfa() -> builder
         std::cout << s << ' ';
     }
     std::cout << std::endl;
+    */
 
     for(auto i = identical_states.size() - 1; i > 0U; --i) {
         auto it = identical_states.begin();
@@ -376,9 +386,11 @@ auto lnfa::to_nfa() -> builder
         }
     }
 
+    /*
     std::cout << "After removal: \n";
     this->print_enclosing(enclosing);
     std::cout << std::endl;
+    */
 
     this->build_nfa(result, enclosing, identical_states);
 

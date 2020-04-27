@@ -88,13 +88,13 @@ auto dfa::get_reachable_from(int const state) const -> std::set<int>
     std::set<int> reachable{};
     std::deque<int> queue{};
 
-    auto insert = [&inserted, &queue](int const state) -> void {
-        if(inserted.count(state) > 0U) {
+    auto insert = [&inserted, &queue](int const s) -> void {
+        if(inserted.count(s) > 0U) {
             return;
         }
 
-        inserted.insert(state);
-        queue.push_back(state);
+        inserted.insert(s);
+        queue.push_back(s);
     };
 
     insert(state);
@@ -190,12 +190,14 @@ auto dfa::remove_equivalent(
         }
     }
 
+    /*
     std::cout << "\nRemove equivalent states:\n";
     for(auto const& [state, transitions] : result) {
         std::cout << state << ": ";
         print(transitions);
         std::cout << std::endl;
     }
+    */
 
     return result;
 }
@@ -213,9 +215,11 @@ auto dfa::minimize() const -> builder
     auto const unreachable_states =
         all_states - this->get_reachable_from(m_builder.get_starting_state());
 
+    /*
     std::cout << "Unreachable: ";
     print(unreachable_states);
     std::cout << std::endl;
+    */
 
     auto new_autom = autom;
 
@@ -223,19 +227,23 @@ auto dfa::minimize() const -> builder
         new_autom.erase(state);
     }
 
+    /*
     std::cout << "\nRemove unreachable states:\n";
     for(auto const& [state, transitions] : new_autom) {
         std::cout << state << ": ";
         print(transitions);
         std::cout << std::endl;
     }
+    */
 
     auto equiv = this->get_equivalent_states(new_autom);
 
     while(!equiv.empty()) {
+        /*
         std::cout << "\nEquivalent states: ";
         print(equiv);
         std::cout << std::endl;
+        */
 
         new_autom = this->remove_equivalent(new_autom, equiv);
         equiv = this->get_equivalent_states(new_autom);

@@ -79,6 +79,12 @@ auto nfa::print_transitions() -> void
 {
     auto const& autom = m_builder.get_configuration();
 
+    std::cout << "Final states: [ ";
+    for(int const final_state : m_builder.get_accepting_states()) {
+        std::cout << final_state << ' ';
+    }
+    std::cout << "]\n";
+
     for(auto const& [state, transitions] : autom) {
         std::cout << state << ": ";
         print(transitions);
@@ -124,6 +130,7 @@ auto nfa::to_dfa() -> builder
         }
     }
 
+    /*
     std::cout << "\nAdditional states:\n";
     for(auto const& set : additional_states) {
         print(set);
@@ -142,6 +149,7 @@ auto nfa::to_dfa() -> builder
         }
     }
     std::cout << std::endl;
+    */
 
     std::deque<std::set<int>> additional_states_copy{ additional_states };
 
@@ -170,12 +178,14 @@ auto nfa::to_dfa() -> builder
         additional_states_copy.pop_front();
     }
 
+    /*
     std::cout << "\nAdditional states:\n";
     for(auto const& set : additional_states) {
         print(set);
         std::cout << ' ';
     }
     std::cout << std::endl << std::endl;
+    */
 
     auto index = [&additional_states,
                   max_state_copy](std::set<int> const& state) -> int {
@@ -192,6 +202,7 @@ auto nfa::to_dfa() -> builder
                max_state_copy + 1;
     };
 
+    /*
     std::cout << "New autom:\n";
     for(auto const& [state, transitions] : new_autom) {
         std::cout << state << ":\n";
@@ -212,6 +223,7 @@ auto nfa::to_dfa() -> builder
         }
     }
     std::cout << std::endl;
+    */
 
     auto is_final = [this](std::set<int> const& set) -> bool {
         auto const& accepting_states = m_builder.get_accepting_states();
@@ -250,9 +262,12 @@ auto nfa::to_dfa() -> builder
         }
     }
 
+    /*
     std::cout << "New final states: ";
     print(new_final_states);
     std::cout << std::endl;
+    */
+
     for(auto const& final_state : new_final_states) {
         result.set_accepting_state(final_state);
     }
