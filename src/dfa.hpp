@@ -4,6 +4,9 @@
 
 #include "fsm.hpp"
 #include "fsm_builder.hpp"
+#include "transition.hpp"
+
+#include <set>
 
 namespace fsm {
 
@@ -13,6 +16,16 @@ private:
     builder m_builder{};
     int m_current_state{ 0 };
     bool m_aborted{ false };
+
+    [[nodiscard]] auto get_reachable_from(int const state) const
+        -> std::set<int>;
+    [[nodiscard]] auto get_equivalent_states(
+        std::map<int, std::vector<fsm::impl::transition>> const& autom) const
+        -> std::set<int>;
+    [[nodiscard]] auto remove_equivalent(
+        std::map<int, std::vector<fsm::impl::transition>> const& autom,
+        std::set<int> const& equiv) const
+        -> std::map<int, std::vector<fsm::impl::transition>>;
 
 public:
     dfa() = delete;
@@ -32,6 +45,8 @@ public:
     [[nodiscard]] auto accepts_lambda() noexcept -> bool override;
     auto reset() -> void override;
     auto print_transitions() -> void override;
+
+    [[nodiscard]] auto minimize() const -> builder;
 };
 
 } // namespace fsm
