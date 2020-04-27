@@ -22,7 +22,7 @@ template<typename T, typename U>
     return a == b;
 }
 
-TEST("[LNFA -> NFA]")
+TEST("[LNFA -> NFA -> DFA]")
 {
     using fsm::lambda;
     fsm::builder builder{};
